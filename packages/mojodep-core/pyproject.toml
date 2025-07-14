@@ -1,23 +1,14 @@
 [project]
-name = "mojodep-rosdistro"
+name = "mojodep-core"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = [
-    "gitpython>=3.1.44",
-    "mojodep-core",
-    "pyyaml>=6.0.2",
-]
+dependencies = []
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/mojodep_rosdistro"]
-
-[tool.pytest.ini_options]
-addopts = [
-    "--import-mode=importlib"
-]
+packages = ["src/mojodep_core"]

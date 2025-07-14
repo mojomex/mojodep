@@ -1,0 +1,7 @@
+{
+  "python.analysis.extraPaths": [
+    "./packages/mojodep-core/src",
+    "./packages/mojodep-rosdistro/src",
+  ],
+  "editor.tabSize": 4,
+}
