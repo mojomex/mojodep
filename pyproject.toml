@@ -1,0 +1,23 @@
+[project]
+name = "mojodep"
+version = "0.1.0"
+description = "Ensuring reproducible builds of ROS 2 packages"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["mojodep-rosdistro"]
+
+[tool.uv.sources]
+mojodep-rosdistro = { workspace = true }
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mojodep"]
+
+[project.scripts]
+mojodep = "mojodep.main:main"

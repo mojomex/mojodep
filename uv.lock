@@ -1,0 +1,24 @@
+version = 1
+requires-python = ">=3.10"
+
+[manifest]
+members = [
+    "mojodep",
+    "mojodep-rosdistro",
+]
+
+[[package]]
+name = "mojodep"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "mojodep-rosdistro" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "mojodep-rosdistro", editable = "packages/mojodep-rosdistro" }]
+
+[[package]]
+name = "mojodep-rosdistro"
+version = "0.1.0"
+source = { editable = "packages/mojodep-rosdistro" }
