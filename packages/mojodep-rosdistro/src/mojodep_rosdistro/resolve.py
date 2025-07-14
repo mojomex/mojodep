@@ -55,7 +55,7 @@ def extract_released_repos(distro_name: str) -> RepoExtractionResult:
 
     if "repositories" not in distro_data:
         print("No repositories found in distribution file")
-        return {}
+        return RepoExtractionResult({}, {})
 
     release_info = {}
     invalid_repos = {}
