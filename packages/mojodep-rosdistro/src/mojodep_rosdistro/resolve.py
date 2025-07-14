@@ -143,7 +143,7 @@ def release_tag_pattern_to_regex(pattern: str) -> re.Pattern:
 
     return re.compile(pattern)
 
-def extract_released_packages_and_versions(release_repo_info: ReleaseRepoInfo):
+def extract_released_packages_and_versions(release_repo_info: ReleaseRepoInfo) -> list[ReleasedPackage]:
     tags = fetch_remote_tags(release_repo_info.release_repo_url)
 
     if not tags:
@@ -151,8 +151,8 @@ def extract_released_packages_and_versions(release_repo_info: ReleaseRepoInfo):
         return []
     
     tag_pattern = release_tag_pattern_to_regex(release_repo_info.release_tag_pattern)
-    
-    released_packages = {}
+
+    released_packages: dict[str, ReleasedPackage] = {}
     for tag_info in tags:
         match = tag_pattern.match(tag_info.tag)
         if not match:
