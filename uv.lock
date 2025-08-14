@@ -4,6 +4,7 @@ requires-python = ">=3.10"
 [manifest]
 members = [
     "mojodep",
+    "mojodep-colcon",
     "mojodep-core",
     "mojodep-rosdistro",
 ]
@@ -136,6 +137,7 @@ name = "mojodep"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "mojodep-colcon" },
     { name = "mojodep-core" },
     { name = "mojodep-rosdistro" },
 ]
@@ -148,6 +150,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "mojodep-colcon", editable = "packages/mojodep-colcon" },
     { name = "mojodep-core", editable = "packages/mojodep-core" },
     { name = "mojodep-rosdistro", editable = "packages/mojodep-rosdistro" },
 ]
@@ -157,6 +160,17 @@ dev = [
     { name = "pytest", specifier = ">=8.4.1" },
     { name = "pytest-cov", specifier = ">=6.2.1" },
 ]
+
+[[package]]
+name = "mojodep-colcon"
+version = "0.1.0"
+source = { editable = "packages/mojodep-colcon" }
+dependencies = [
+    { name = "mojodep-core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "mojodep-core", editable = "packages/mojodep-core" }]
 
 [[package]]
 name = "mojodep-core"

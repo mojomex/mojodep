@@ -6,11 +6,13 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "mojodep-rosdistro",
+    "mojodep-colcon",
     "mojodep-core",
 ]
 
 [tool.uv.sources]
 mojodep-rosdistro = { workspace = true }
+mojodep-colcon = { workspace = true }
 mojodep-core = { workspace = true }
 
 [tool.uv.workspace]
