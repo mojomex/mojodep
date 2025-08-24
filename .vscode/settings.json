@@ -2,6 +2,9 @@
   "python.analysis.extraPaths": [
     "./packages/mojodep-core/src",
     "./packages/mojodep-rosdistro/src",
+    "./packages/mojodep-colcon/src",
+    "./packages/mojodep-rosdep/src",
+    "./packages/mojodep-git/src",
   ],
   "editor.tabSize": 4,
 }

@@ -6,6 +6,7 @@ members = [
     "mojodep",
     "mojodep-colcon",
     "mojodep-core",
+    "mojodep-git",
     "mojodep-rosdep",
     "mojodep-rosdistro",
 ]
@@ -170,15 +171,30 @@ version = "0.1.0"
 source = { editable = "packages/mojodep-colcon" }
 dependencies = [
     { name = "mojodep-core" },
+    { name = "mojodep-git" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "mojodep-core", editable = "packages/mojodep-core" }]
+requires-dist = [
+    { name = "mojodep-core", editable = "packages/mojodep-core" },
+    { name = "mojodep-git", editable = "packages/mojodep-git" },
+]
 
 [[package]]
 name = "mojodep-core"
 version = "0.1.0"
 source = { editable = "packages/mojodep-core" }
+
+[[package]]
+name = "mojodep-git"
+version = "0.1.0"
+source = { editable = "packages/mojodep-git" }
+dependencies = [
+    { name = "mojodep-core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "mojodep-core", editable = "packages/mojodep-core" }]
 
 [[package]]
 name = "mojodep-rosdep"

@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "mojodep-core",
+    "mojodep-git",
 ]
 
 [build-system]
@@ -19,3 +20,6 @@ packages = ["src/mojodep_colcon"]
 addopts = [
     "--import-mode=importlib"
 ]
+
+[tool.uv.sources]
+mojodep-git = { workspace = true }
