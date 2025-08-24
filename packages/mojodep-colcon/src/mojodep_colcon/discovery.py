@@ -4,6 +4,8 @@ import re
 import shutil
 import subprocess
 
+from mojodep_git.repo import GitVersion, find_repository_containing, get_repository_version
+
 
 @dataclass(frozen=True)
 class ColconSourcePackage:
@@ -44,3 +46,10 @@ def discover_packages():
     ]
 
     return packages
+
+def get_package_version(package: ColconSourcePackage) -> GitVersion | None:
+    repo = find_repository_containing(package.path)
+    if repo is None:
+        return None
+
+    return get_repository_version(repo)
