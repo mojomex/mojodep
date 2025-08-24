@@ -3,17 +3,31 @@ import re
 import shutil
 import subprocess
 
+
 @dataclass(frozen=True)
 class ResolvedRosdep:
     key: str
     source: str
     packages: list[str]
 
+
+@dataclass(frozen=True)
+class AptVersion:
+    version: str
+    hash: str
+
+
+@dataclass(frozen=True)
+class PipVersion:
+    version: str
+
+
 def _find_rosdep():
     rosdep = shutil.which("rosdep")
     if rosdep is None:
         raise RuntimeError("rosdep is not installed or not found in PATH")
     return rosdep
+
 
 def list_dependency_keys() -> list[str]:
     rosdep = _find_rosdep()
@@ -60,7 +74,9 @@ def resolve_keys(keys: list[str]) -> list[ResolvedRosdep]:
         if current_key is None:
             m = re_rosdep_header.match(line)
             if not m:
-                raise ValueError(f"Unexpected line format: {line}. Expected #ROSDEP[<key>].")
+                raise ValueError(
+                    f"Unexpected line format: {line}. Expected #ROSDEP[<key>]."
+                )
             current_key = m.group("key")
             continue
 
@@ -73,7 +89,9 @@ def resolve_keys(keys: list[str]) -> list[ResolvedRosdep]:
 
         m = re_rosdep_package_list.match(line)
         if not m:
-            raise ValueError(f"Unexpected line format: {line}. Expected <resolved_package> ...")
+            raise ValueError(
+                f"Unexpected line format: {line}. Expected <resolved_package> ..."
+            )
 
         packages = list(filter(None, m.groups()))
         resolved.append(ResolvedRosdep(current_key, current_source, packages))
@@ -86,3 +104,68 @@ def resolve_keys(keys: list[str]) -> list[ResolvedRosdep]:
         raise ValueError("Incomplete rosdep resolution, source header or source list.")
 
     return resolved
+
+
+def _find_apt_cache():
+    apt_cache = shutil.which("apt-cache")
+    if apt_cache is None:
+        raise RuntimeError("apt-cache is not installed or not found in PATH")
+    return apt_cache
+
+
+def get_apt_version(apt_package: str) -> AptVersion | None:
+    apt_cache = _find_apt_cache()
+    result = subprocess.run(
+        [apt_cache, "show", apt_package],
+        capture_output=True,
+        text=True,
+    )
+
+    if result.returncode != 0:
+        raise ValueError(
+            f"Failed to get apt package version for {apt_package}: {result.stderr.strip()}"
+        )
+    
+    re_version = re.compile(r"^Version:\s*(?P<version>\S+)$")
+    re_hash = re.compile(r"^SHA256:\s*(?P<hash>\S+)$")
+
+    version = re_version.search(result.stdout)
+    hash = re_hash.search(result.stdout)
+
+    if not version or not hash:
+        raise ValueError(
+            f"Failed to parse apt package version for {apt_package}: {result.stderr.strip()}"
+        )
+
+    return AptVersion(version.group("version"), hash.group("hash"))
+
+
+def _find_pip3():
+    pip3 = shutil.which("pip3")
+    if pip3 is None:
+        raise RuntimeError("pip3 is not installed or not found in PATH")
+    return pip3
+
+
+def get_pip_version(pip_package: str) -> PipVersion | None:
+    pip3 = _find_pip3()
+    result = subprocess.run(
+        [pip3, "show", pip_package],
+        capture_output=True,
+        text=True,
+    )
+
+    if result.returncode != 0:
+        raise ValueError(
+            f"Failed to get pip package version for {pip_package}: {result.stderr.strip()}"
+        )
+    
+    re_version = re.compile(r"^Version:\s*(?P<version>\S+)$")
+
+    version = re_version.search(result.stdout)
+    if not version:
+        raise ValueError(
+            f"Failed to parse pip package version for {pip_package}: {result.stderr.strip()}"
+        )
+
+    return PipVersion(version.group("version"))
