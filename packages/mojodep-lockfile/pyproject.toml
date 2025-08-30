@@ -1,0 +1,29 @@
+[project]
+name = "mojodep-lockfile"
+version = "0.1.0"
+description = "Lockfile definitions and interfacing for mojodep"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mojodep-colcon",
+    "mojodep-core",
+    "mojodep-rosdep",
+    "mojodep-rosdistro",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mojodep_lockfile"]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib"
+]
+
+[tool.uv.sources]
+mojodep-rosdep = { workspace = true }
+mojodep-rosdistro = { workspace = true }
+mojodep-colcon = { workspace = true }

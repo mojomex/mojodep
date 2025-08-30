@@ -7,6 +7,7 @@ members = [
     "mojodep-colcon",
     "mojodep-core",
     "mojodep-git",
+    "mojodep-lockfile",
     "mojodep-rosdep",
     "mojodep-rosdistro",
 ]
@@ -141,6 +142,7 @@ source = { editable = "." }
 dependencies = [
     { name = "mojodep-colcon" },
     { name = "mojodep-core" },
+    { name = "mojodep-lockfile" },
     { name = "mojodep-rosdep" },
     { name = "mojodep-rosdistro" },
 ]
@@ -155,6 +157,7 @@ dev = [
 requires-dist = [
     { name = "mojodep-colcon", editable = "packages/mojodep-colcon" },
     { name = "mojodep-core", editable = "packages/mojodep-core" },
+    { name = "mojodep-lockfile", editable = "packages/mojodep-lockfile" },
     { name = "mojodep-rosdep", editable = "packages/mojodep-rosdep" },
     { name = "mojodep-rosdistro", editable = "packages/mojodep-rosdistro" },
 ]
@@ -195,6 +198,25 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [{ name = "mojodep-core", editable = "packages/mojodep-core" }]
+
+[[package]]
+name = "mojodep-lockfile"
+version = "0.1.0"
+source = { editable = "packages/mojodep-lockfile" }
+dependencies = [
+    { name = "mojodep-colcon" },
+    { name = "mojodep-core" },
+    { name = "mojodep-rosdep" },
+    { name = "mojodep-rosdistro" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "mojodep-colcon", editable = "packages/mojodep-colcon" },
+    { name = "mojodep-core", editable = "packages/mojodep-core" },
+    { name = "mojodep-rosdep", editable = "packages/mojodep-rosdep" },
+    { name = "mojodep-rosdistro", editable = "packages/mojodep-rosdistro" },
+]
 
 [[package]]
 name = "mojodep-rosdep"

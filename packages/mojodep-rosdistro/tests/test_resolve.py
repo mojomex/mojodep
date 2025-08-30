@@ -2,8 +2,10 @@ import shutil
 import mojodep_rosdistro.config as config
 
 from mojodep_rosdistro.resolve import (
+    BloomVersionNumber,
     ReleaseRepoInfo,
     TagInfo,
+    get_distribution_file_path,
     get_or_clone_rosdistro_repo,
 )
 
@@ -32,10 +34,11 @@ def test_extract_released_repos():
     from mojodep_rosdistro.resolve import extract_released_repos
 
     # Ensure the repository is cloned
-    get_or_clone_rosdistro_repo()
+    repo = get_or_clone_rosdistro_repo()
+    distro_file = get_distribution_file_path(repo, "humble")
 
     # Extract released repositories for a known distribution
-    result = extract_released_repos("humble")
+    result = extract_released_repos(distro_file)
 
     successful_repos = result.release_info
 
@@ -45,9 +48,9 @@ def test_extract_released_repos():
 
 
 def test_fetch_remote_tags():
-    from mojodep_rosdistro.resolve import fetch_remote_tags
+    from mojodep_rosdistro.resolve import _fetch_remote_tags
 
-    tags = fetch_remote_tags("https://github.com/mojomex/mojodep.git")
+    tags = _fetch_remote_tags("https://github.com/mojomex/mojodep.git")
 
     expected = TagInfo("initial-commit", "decf36b64e0b6c955477d7848784a8a963b58950")
     assert expected in tags, "Expected tag not found in fetched tags"
@@ -65,10 +68,10 @@ def test_extract_released_packages_and_versions():
     packages = extract_released_packages_and_versions(release_repo_info)
 
     expected_package_name = "rclcpp"
-    expected_version = (16, 0, 4, 2)
+    expected_version = BloomVersionNumber(16, 0, 4, 2)
     expected_commit_hash = "88d5e85c795fd0f815a2848bf5bf3ba9cfd9a314"
 
-    matching_packages = filter(lambda pkg: pkg.name == expected_package_name, packages)
+    matching_packages = filter(lambda pkg: pkg.name == expected_package_name, packages.values())
     found_package = next(matching_packages, None)
 
     assert found_package is not None, f"Package {expected_package_name} not found"

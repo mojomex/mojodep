@@ -1,7 +1,8 @@
-from dataclasses import dataclass
 import re
 import shutil
 import subprocess
+from dataclasses import dataclass
+from typing import Collection
 
 
 @dataclass(frozen=True)
@@ -29,7 +30,7 @@ def _find_rosdep():
     return rosdep
 
 
-def list_dependency_keys() -> list[str]:
+def list_dependency_keys() -> set[str]:
     rosdep = _find_rosdep()
 
     result = subprocess.run(
@@ -41,10 +42,35 @@ def list_dependency_keys() -> list[str]:
     if result.returncode != 0:
         raise RuntimeError(f"Failed to list rosdep keys: {result.stderr.strip()}")
 
-    return result.stdout.splitlines()
+    return set(result.stdout.splitlines())
 
 
-def resolve_keys(keys: list[str]) -> list[ResolvedRosdep]:
+def get_keys_in_rosdistro(keys: Collection[str], distro: str) -> set[str]:
+    rosdep = _find_rosdep()
+
+    result = subprocess.run(
+        [rosdep, "where-defined", *keys],
+        capture_output=True,
+        text=True,
+    )
+
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"Failed to list rosdep keys for distro {distro}: {result.stderr.strip()}"
+        )
+
+    lines = result.stdout.splitlines()
+    if len(lines) != len(keys):
+        raise ValueError(
+            f"Unexpected number of lines in rosdep output: queried {len(keys)}, got {len(lines)}."
+        )
+
+    expected_distro_uri = f"https://raw.githubusercontent.com/ros/rosdistro/master/{distro}/distribution.yaml"
+
+    return {key for key, uri in zip(keys, lines) if uri.strip() == expected_distro_uri}
+
+
+def resolve_keys_to_system_deps(keys: Collection[str]) -> list[ResolvedRosdep]:
     rosdep = _find_rosdep()
 
     result = subprocess.run(
@@ -125,7 +151,7 @@ def get_apt_version(apt_package: str) -> AptVersion | None:
         raise ValueError(
             f"Failed to get apt package version for {apt_package}: {result.stderr.strip()}"
         )
-    
+
     re_version = re.compile(r"^Version:\s*(?P<version>\S+)$")
     re_hash = re.compile(r"^SHA256:\s*(?P<hash>\S+)$")
 
@@ -159,7 +185,7 @@ def get_pip_version(pip_package: str) -> PipVersion | None:
         raise ValueError(
             f"Failed to get pip package version for {pip_package}: {result.stderr.strip()}"
         )
-    
+
     re_version = re.compile(r"^Version:\s*(?P<version>\S+)$")
 
     version = re_version.search(result.stdout)

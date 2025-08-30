@@ -5,6 +5,8 @@
     "./packages/mojodep-colcon/src",
     "./packages/mojodep-rosdep/src",
     "./packages/mojodep-git/src",
+    "./packages/mojodep-lockfile/src",
   ],
   "editor.tabSize": 4,
+  "python.analysis.typeCheckingMode": "standard",
 }

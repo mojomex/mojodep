@@ -9,6 +9,7 @@ dependencies = [
     "mojodep-colcon",
     "mojodep-rosdep",
     "mojodep-core",
+    "mojodep-lockfile",
 ]
 
 [tool.uv.sources]
@@ -16,6 +17,7 @@ mojodep-rosdistro = { workspace = true }
 mojodep-colcon = { workspace = true }
 mojodep-rosdep = { workspace = true }
 mojodep-core = { workspace = true }
+mojodep-lockfile = { workspace = true }
 
 [tool.uv.workspace]
 members = ["packages/*"]
